@@ -1,0 +1,39 @@
+*.class
+!.mvn/wrapper/maven-wrapper.jar
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+.studio
+
+# Apple #
+.DS_Store
+
+### IntelliJ IDEA ###
+.idea
+*.log
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/
+
+ttf-backend/src/main/resources/public/
+ttf-backend/target
+ttf-backend/.idea
+ttf-backend/.mvn
+ttf-vue-project/dist/
+ttf-vue-project/public/
+ttf-vue-project/node_modules/
+ttf-vue-project/target/
