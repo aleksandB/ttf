@@ -1,10 +1,10 @@
 <template>
 <nav> 
     <v-app-bar
-    flat
-    height="50px"
-    app
-    class="secondary"
+        shaped
+        height="50px"
+        app
+        class="secondary"
     >
         <v-app-bar-nav-icon @click="drawer = !drawer" class="grey--text">            
         </v-app-bar-nav-icon>
@@ -39,7 +39,8 @@ export default {
         return {
             drawer: false,
             links: [
-            { icon: 'Z', text: 'DashboardView', route: '/' },        
+            { icon: 'V', text: 'ProfileView', route: '/profile' },        
+            { icon: 'Z', text: 'DashboardView', route: '/dashboard' },        
             { icon: 'X', text: 'TeamView', route: '/team' },
         ],
         }

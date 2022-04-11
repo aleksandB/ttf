@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_URL = 'http://localhost:8080/api/auth'
+const API_URL = 'http://localhost:8080/api/auth/'
 
 class AuthService {
     login(user){
@@ -18,7 +18,7 @@ class AuthService {
     logout() {
         localStorage.removeItem('user');
     }
-    register(){
+    register(user) {
         return axios
         .post(API_URL + 'signup', {
             username: user.username,
