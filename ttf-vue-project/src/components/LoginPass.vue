@@ -131,7 +131,7 @@
         </v-btn>        
         <v-btn
                 color="secondary"
-                @click="logout"
+                @click="logOut"
                 class="pa-2 ma-2"
                 rounded
                 small
@@ -143,6 +143,7 @@
 
 <script>
 import User from '../models/user';
+import EventBus from "../common/EventBus"
 export default {    
     data() {
         return {
@@ -164,13 +165,6 @@ export default {
     created() {
         if (this.loggedIn) {
             console.log('User logged In!'); //Will be changed after
-            this.$router.push('/');
-        }
-    },
-    mounted() {
-        if (this.loggedIn) {
-            console.log('User logged In!'); //Will be changed after
-            console.log(this.$store.state.auth.user.username)
             this.$router.push('/');
         }
     },
@@ -220,12 +214,20 @@ export default {
                 }
             });
         },
-        logout(){
+        logOut(){
             this.$store.dispatch('auth/logout');
             this.$router.push('/profile')  //Will be changed after
         },
         currentUser() {           
            this.$router.push('/profile')  //Will be changed after
+        },
+        mounted() {
+            EventBus.on("logout", () => {
+                this.logOut();
+            });
+        },
+        beforeDestroy() {
+            EventBus.remove("logout");
         }
     }
 }
