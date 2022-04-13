@@ -41,7 +41,7 @@ export default {
             links: [
             { icon: 'mdi-folder', text: 'ProfileView', route: '/profile' },        
             { icon: 'mdi-folder', text: 'DashboardView', route: '/dashboard' },        
-            { icon: 'mdi-folder', text: 'TeamView', route: '/team' },
+            { icon: 'mdi-folder', text: 'ScheduleView', route: '/schedule' },
         ],
         }
     }

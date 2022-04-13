@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import DashboardView from './views/DashboardView.vue'
 import ProfileView from './views/ProfileView.vue'
-import TeamView from './views/TeamView.vue'
+import ScheduleView from './views/ScheduleView.vue'
 
 Vue.use(Router)
 
@@ -25,9 +25,9 @@ export const router = new Router({
       component: DashboardView
     },    
     {
-      path: '/team',
-      name: 'team',
-      component: TeamView
+      path: '/schedule',
+      name: 'schedule',
+      component: ScheduleView
     },
     {
       path: "*",
