@@ -165,7 +165,7 @@ export default {
     created() {
         if (this.loggedIn) {
             console.log('User logged In!'); //Will be changed after
-            this.$router.push('/');
+            this.$router.push('/profile');
         }
     },
     methods: {

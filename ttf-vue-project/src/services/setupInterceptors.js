@@ -1,5 +1,6 @@
 import axiosInstance from "./api";
 import TokenService from "./token.service";
+
 const setup = (store) => {
     axiosInstance.interceptors.request.use(
         (config) => {
@@ -13,6 +14,7 @@ const setup = (store) => {
             return Promise.reject(error)
         }
     );
+    
     axiosInstance.interceptors.response.use(
         (res) => {
             return res;

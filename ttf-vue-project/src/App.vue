@@ -11,6 +11,7 @@
 
 <script>
 import NavBar from './components/NavBar.vue';
+import EventBus from "./common/EventBus";
 
 export default {
   name: 'App',
@@ -24,6 +25,20 @@ export default {
     currentUser() {
       return this.$store.state.auth.user;
     }
+  },
+  methods: {
+    logOut() {
+      this.$store.dispatch('auth/logout');
+      this.$router.push('/login');
+    }
+  },
+  mounted() {
+    EventBus.on("logout", () => {
+      this.logOut();
+    });
+  },
+  beforeUnmount() {
+    EventBus.remove("logout");
   }
 };
 </script>

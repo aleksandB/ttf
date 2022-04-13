@@ -37,7 +37,7 @@ export default {
     mounted() {
         if(!this.currentUser){
             console.log('Auth required')
-            this.$router.push('/profile') //change this method
+            //this.$router.push('/profile') //change this method
         }
     }
 }
