@@ -8,7 +8,7 @@
                 v-on="on"
                 class="pa-2 ma-2"
                 rounded
-                small
+                small                                             
             >
                Sign in
             </v-btn>           
@@ -18,45 +18,56 @@
                 <h2>Authentification form</h2>
             </v-card-title>
             <v-card-text>
-                <v-form class="px-3" ref="form">
-                    <v-text-field 
-                        v-model="user.username" 
-                        label="Login" 
-                        prepend-icon="mdi-folder"
-                        v-validate="'required'"
-                        type="text"
-                        name="username"                            
-                    ></v-text-field>
-                    <div 
-                        v-if="errors.has('username')"
-                        class="alert alert-danger"
-                        role="alert"
-                    >Username is required!</div>
-                    <v-text-field 
-                         v-model="user.password"
-                         label="Password"
-                         prepend-icon="mdi-folder"                         
-                         v-validate="'required'"
-                         type="password"
-                         name="password"
-                    ></v-text-field>
-                    <div 
-                        v-if="errors.has('password')"
-                        class="alert alert-danger"
-                        role="alert"
-                    >Password is required!</div>                    
-                    <v-btn @click="handleLogin" class="form-group success rounded-pill" :loading="loading">Login in</v-btn>                    
-                    <div class="form-group">
-                    <div v-if="message" class="alert alert-danger" role="alert">{{message}}</div>
-                    </div>
-                </v-form>
+                <validation-observer
+                    ref="observer"
+                    v-slot="{ invalid }"
+                >
+                    <v-form class="px-3" @submit.prevent="handleLogin">
+                        <validation-provider
+                            v-slot="{ errors }"
+                            name="Name"
+                            rules="required"
+                        >
+                            <v-text-field 
+                                v-model="user.username" 
+                                label="Name" 
+                                prepend-icon="mdi-folder"                               
+                                type="text"
+                                name="username"
+                                :error-messages="errors"
+                                required                            
+                            ></v-text-field>
+                        </validation-provider>
+                        <validation-provider
+                            v-slot="{ errors }"
+                            name="Password"
+                            rules="required|min:6"
+                        >
+                        <v-text-field 
+                            v-model="user.password"
+                            label="Password"
+                            prepend-icon="mdi-folder"                         
+                            :error-messages="errors"
+                            type="password"
+                            name="password"
+                            required
+                        ></v-text-field>
+                        </validation-provider>
+                                         
+                        <v-btn type="submit" class="form-group success rounded-pill" :loading="loading" :disabled ="invalid">Login in</v-btn>                    
+                        <v-btn @click="clear" class="pa-2 ma-2 success rounded-pill">Clear</v-btn>
+                        <div class="form-group">
+                        <div v-if="message" class="alert alert-danger" role="alert">{{message}}</div>
+                        </div>
+                    </v-form>
+                </validation-observer>
             </v-card-text>
         </v-card>
     </v-dialog>
     <v-dialog max-width="400px" v-model="dialog2">
         <template v-slot:activator="{ on, attrs}">
             <v-btn
-                color="secondary"
+                color="success"
                 v-bind="attrs"
                 v-on="on"
                 class="pa-2 ma-2"
@@ -71,58 +82,73 @@
                 <h2>Registration form</h2>
             </v-card-title>
             <v-card-text>
-                <v-form class="px-3">
-                    <v-text-field 
-                        v-model="userReg.username"
-                        v-validate="'required|min:3|max:20'"
-                        type="text"
-                        name="username" 
-                        label="Login" 
-                        prepend-icon="mdi-folder"
-                    ></v-text-field>
-                    <div 
-                        v-if="submitted && errors.has('username')"
-                        class="alert-danger"
-                    >{{ errors.first('username')}}</div>
-                    <v-text-field 
-                        v-model="userReg.email" 
-                        label="Email"
-                        v-validate="'required|email|max:50'"
-                        type="text"
-                        name="email"  
-                        prepend-icon="mdi-folder"
-                    ></v-text-field>
-                    <div 
-                        v-if="submitted && errors.has('email')"
-                        class="alert-danger"
-                    >{{ errors.first('email')}}</div>
-                    <v-text-field 
-                        v-model="userReg.password" 
-                        label="Password"
-                        v-validate="'required|min:6|max:40'"
-                        type="password"
-                        name="password"   
-                        prepend-icon="mdi-folder"
-                    ></v-text-field>
-                    <div
-                        v-if="submitted && errors.has('password')"
-                        class="alert-danger"
-                    >{{errors.first('password')}}</div>  
-                    <v-btn @click="hanldeRegister" class="success rounded-pill" :loading="loading">Sign up</v-btn>
-                    <div
-                       v-if="message"
-                       class="alert"
-                       :class="successful ? 'alert-success' : 'alert-danger'"
-                    >{{message}}</div>
-                </v-form>
+                <validation-observer
+                    ref="observerReg"
+                    v-slot="{ invalid }"
+                >
+                    <v-form class="px-3" @submit.prevent="hanldeRegister">
+                        <validation-provider
+                            v-slot="{ errors }"
+                            name="Name"
+                            rules="required|min:2"
+                        >
+                        <v-text-field 
+                            v-model="userReg.username"
+                            type="text"
+                            name="username" 
+                            label="Name" 
+                            prepend-icon="mdi-folder"
+                            :error-messages="errors"
+                            required 
+                        ></v-text-field>
+                        </validation-provider>
+                        <validation-provider
+                            v-slot="{ errors }"
+                            name="email"
+                            rules="required|email"
+                        >                        
+                        <v-text-field 
+                            v-model="userReg.email" 
+                            label="Email"                            
+                            type="text"
+                            name="email"  
+                            prepend-icon="mdi-folder"
+                            :error-messages="errors"
+                            required
+                        ></v-text-field>
+                        </validation-provider>     
+                        <validation-provider
+                            v-slot="{ errors }"
+                            name="Password"
+                            rules="required|min:6|max:20"
+                        >                   
+                        <v-text-field 
+                            v-model="userReg.password" 
+                            label="Password"                            
+                            type="password"
+                            name="password"   
+                            prepend-icon="mdi-folder"
+                            :error-messages="errors"
+                            required
+                        ></v-text-field> 
+                        </validation-provider>                      
+                        <v-btn type="submit" class="success rounded-pill" :loading="loading" :disabled="invalid">Sign up</v-btn>
+                        <v-btn @click="clearReg" class="pa-2 ma-2 success rounded-pill">Clear</v-btn>
+                        <div
+                        v-if="message"
+                        class="alert"
+                        :class="successful ? 'alert-success' : 'alert-danger'"
+                        >{{message}}</div>
+                    </v-form>
+                </validation-observer>
             </v-card-text>
         </v-card>
     </v-dialog>
     </div>
     <div v-else>        
         <v-btn
-                color="secondary"
-                @click="handleLogin"
+                color="success"
+                @click="currentUser"
                 class="pa-2 ma-2"
                 rounded
                 small
@@ -144,7 +170,43 @@
 <script>
 import User from '../models/user';
 import EventBus from "../common/EventBus"
-export default {    
+import { required, digits, email, max, min } from 'vee-validate/dist/rules'
+import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
+
+setInteractionMode('eager')
+
+  extend('digits', {
+    ...digits,
+    message: '{_field_} needs to be {length} digits. ({_value_})',
+  })
+
+  extend('required', {
+    ...required,
+    message: '{_field_} can not be empty',
+  })
+
+  extend('max', {
+    ...max,
+    message: '{_field_} may not be smaller than {length} characters',
+  })
+
+  extend('min', {
+    ...min,
+    message: '{_field_} may not be greater than {length} characters',
+  })
+
+
+extend('email', {
+    ...email,
+    message: 'Email must be valid',
+  })
+
+
+export default {
+    components: {
+        ValidationProvider,
+        ValidationObserver
+    },    
     data() {
         return {
             user: new User('',''),
@@ -164,7 +226,7 @@ export default {
     },
     created() {
         if (this.loggedIn) {
-            console.log('User logged In!'); //Will be changed after
+            console.log('User logged In!'); //Will be changed after            
             this.$router.push('/profile');
         }
     },
@@ -172,7 +234,8 @@ export default {
         handleLogin() {
             console.log(this.login, this. password);
             this.dialog = false;
-            this.$validator.validateAll().then(isValid => {
+            this.$refs.observer.validate()
+                .then(isValid => {
                 if(!isValid) {
                     this.loading = false;
                     return;
@@ -196,12 +259,13 @@ export default {
         hanldeRegister() {
             this.message = '';
             this.submitted = true;
-            this.$validator.validate().then(isValid => {
+            this.$refs.observerReg.validate().then(isValid => {
                 if (isValid) {
                     this.$store.dispatch('auth/register',this.userReg).then (
                         data => {
                             this.message = data.message;
                             this.successful = true;
+                            this.clearReg();
                         },
                         error => {
                             this.message = 
@@ -228,7 +292,17 @@ export default {
         },
         beforeDestroy() {
             EventBus.remove("logout");
-        }
+        },
+        clear() {
+            this.user = new User ('','');        
+            this.$refs.observer.reset();
+            this.message='';
+        },
+        clearReg() {            
+            this.userReg = new User('','','');
+            this.$refs.observerReg.reset();
+            this.message = '';
+        },
     }
 }
 </script>

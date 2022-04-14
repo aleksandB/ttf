@@ -18,7 +18,7 @@ class AuthService {
         });
     }
     logout() {
-        TokenService.removeUser;
+        TokenService.removeUser();
     }
     register({ username, email, password}) {
         return api

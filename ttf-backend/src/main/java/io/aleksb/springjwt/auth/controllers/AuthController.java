@@ -21,9 +21,12 @@ import io.aleksb.springjwt.auth.payload.response.MessageResponse;
 import io.aleksb.springjwt.auth.payload.response.TokenRefreshResponse;
 import io.aleksb.springjwt.auth.repository.RoleRepository;
 import io.aleksb.springjwt.auth.repository.UserRepository;
+import io.aleksb.springjwt.auth.security.jwt.AuthEntryPointJwt;
 import io.aleksb.springjwt.auth.security.jwt.JwtUtils;
 import io.aleksb.springjwt.auth.security.services.RefreshTokenService;
 import io.aleksb.springjwt.auth.security.services.UserDetailsImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,6 +44,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+  private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
   @Autowired
   AuthenticationManager authenticationManager;
 
@@ -76,6 +81,8 @@ public class AuthController {
         .collect(Collectors.toList());
 
     RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+
+    logger.info("Login successful by user " + userDetails.getUsername());
 
     return ResponseEntity.ok(new JwtResponse(jwt,
                          refreshToken.getToken(),
