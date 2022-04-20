@@ -3,7 +3,7 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import { router } from './router'
 import store from './store'
-import VeeValidate from 'vee-validate'
+import * as VeeValidate from 'vee-validate';
 import Vuex from 'vuex'
 import setupInterceptors from './services/setupInterceptors'
 
