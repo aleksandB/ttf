@@ -187,12 +187,12 @@ setInteractionMode('eager')
 
   extend('max', {
     ...max,
-    message: '{_field_} may not be smaller than {length} characters',
+    message: '{_field_} may not be greater than {length} characters',
   })
 
   extend('min', {
     ...min,
-    message: '{_field_} may not be greater than {length} characters',
+    message: '{_field_} may not be smaller than {length} characters',
   })
 
 

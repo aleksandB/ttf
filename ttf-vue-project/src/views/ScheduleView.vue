@@ -36,7 +36,7 @@
 
       <v-divider class="mb-4"></v-divider>
 
-      <v-card v-if="games.length > 0">
+      <v-card v-if="games.length > 0" class="scroll">
         
           <template v-for="(game, i) in games">         
             <v-divider
@@ -88,7 +88,8 @@
                       </div>
                       <div v-else class="table__round__tt d-flex flex-column ma-5 my-auto">
                           <p>Waiting results</p>
-                      </div>
+                      </div>                      
+                      
                       <v-spacer/>
                       <div v-if="!game.done && getCurrentUser(i)" class="table__btn d-flex flex-row justify-content-end ma-5 my-auto">  
                             <v-tooltip top>
@@ -99,7 +100,14 @@
                               color="primary"
                               v-bind="attrs"
                               v-on="on"
+                              @click ="showScheduleForm=true"
                               >
+                              <EditScore
+                                v-model="showScheduleForm"
+                                :gameInc.sync ="games[i]"
+                              >
+                              </EditScore>
+                              
                                 <v-icon fab centered>mdi-pencil</v-icon>
                                 <span class="caption text-lowercase"></span>
                               </v-btn>                    
@@ -114,6 +122,7 @@
                               color="info"
                               v-bind="attrs"
                               v-on="on"
+                              @click="saveState(i)"
                               >
                                 <v-icon fab centered>mdi-package-down</v-icon>
                                 <span class="caption text-lowercase"></span>
@@ -136,8 +145,8 @@
 
                       </div>
                     </v-row>
-              </v-list-item-action>              
-
+              </v-list-item-action>             
+              
               
             </v-list-item>          
           </template>
@@ -150,10 +159,13 @@
 
 <script>
 import UserService from '../services/user.service';
+import EditScore from '../components/EditScore.vue'
 export default {
+    components: {EditScore},
     name: 'ScheduleView',
     data() {
         return {
+            showScheduleForm: false,
             games: [
                     {
                       game_id: 1,
@@ -171,7 +183,7 @@ export default {
                       score_set4_player2: null,
                       score_set5_player1: null,
                       score_set5_player2: null,          
-                      done: false,          
+                      done: false,                               
                     },
                     {
                       game_id: 2,
@@ -189,7 +201,7 @@ export default {
                       score_set4_player2: 11,
                       score_set5_player1: 13,
                       score_set5_player2: 11,          
-                      done: true,          
+                      done: true,                                 
                     },
                     {
                       game_id: 3,
@@ -207,7 +219,151 @@ export default {
                       score_set4_player2: null,
                       score_set5_player1: null,
                       score_set5_player2: null,          
+                      done: true,           
+                    },
+                    {
+                      game_id: 4,
+                      player_id1: "aleksB321",
+                      player_id2: "aleksB1",
+                      game_total_player1: null,
+                      game_total_player2: null,
+                      score_set1_player1: null,
+                      score_set1_player2: null,
+                      score_set2_player1: null,
+                      score_set2_player2: null,
+                      score_set3_player1: null,
+                      score_set3_player2: null,
+                      score_set4_player1: null,
+                      score_set4_player2: null,
+                      score_set5_player1: null,
+                      score_set5_player2: null,          
                       done: false,          
+                    },
+                    {
+                      game_id: 5,
+                      player_id1: "aleksB3",
+                      player_id2: "aleks44B",
+                      game_total_player1: 4,
+                      game_total_player2: 1,
+                      score_set1_player1: 13,
+                      score_set1_player2: 11,
+                      score_set2_player1: 11,
+                      score_set2_player2: 1,
+                      score_set3_player1: 11,
+                      score_set3_player2: 5,
+                      score_set4_player1: 11,
+                      score_set4_player2: 6,
+                      score_set5_player1: null,
+                      score_set5_player2: null,          
+                      done: true,          
+                    },
+                    {
+                      game_id: 6,
+                      player_id1: "aleksB3",
+                      player_id2: "aleks44B",
+                      game_total_player1: 4,
+                      game_total_player2: 1,
+                      score_set1_player1: 13,
+                      score_set1_player2: 11,
+                      score_set2_player1: 11,
+                      score_set2_player2: 1,
+                      score_set3_player1: 11,
+                      score_set3_player2: 5,
+                      score_set4_player1: 11,
+                      score_set4_player2: 6,
+                      score_set5_player1: null,
+                      score_set5_player2: null,          
+                      done: true,         
+                    },
+                    {
+                      game_id: 7,
+                      player_id1: "aleksB3",
+                      player_id2: "aleks44B",
+                      game_total_player1: 4,
+                      game_total_player2: 1,
+                      score_set1_player1: 13,
+                      score_set1_player2: 11,
+                      score_set2_player1: 11,
+                      score_set2_player2: 1,
+                      score_set3_player1: 11,
+                      score_set3_player2: 5,
+                      score_set4_player1: 11,
+                      score_set4_player2: 6,
+                      score_set5_player1: null,
+                      score_set5_player2: null,          
+                      done: true,          
+                    },
+                    {
+                      game_id: 8,
+                      player_id1: "aleksB321",
+                      player_id2: "aleksB1",
+                      game_total_player1: null,
+                      game_total_player2: null,
+                      score_set1_player1: null,
+                      score_set1_player2: null,
+                      score_set2_player1: null,
+                      score_set2_player2: null,
+                      score_set3_player1: null,
+                      score_set3_player2: null,
+                      score_set4_player1: null,
+                      score_set4_player2: null,
+                      score_set5_player1: null,
+                      score_set5_player2: null,          
+                      done: false,          
+                    },
+                    {
+                      game_id: 9,
+                      player_id1: "aleksB321",
+                      player_id2: "aleksB1",
+                      game_total_player1: null,
+                      game_total_player2: null,
+                      score_set1_player1: null,
+                      score_set1_player2: null,
+                      score_set2_player1: null,
+                      score_set2_player2: null,
+                      score_set3_player1: null,
+                      score_set3_player2: null,
+                      score_set4_player1: null,
+                      score_set4_player2: null,
+                      score_set5_player1: null,
+                      score_set5_player2: null,          
+                      done: false,        
+                    },
+                    {
+                      game_id: 10,
+                      player_id1: "aleksB321",
+                      player_id2: "aleksB1",
+                      game_total_player1: null,
+                      game_total_player2: null,
+                      score_set1_player1: null,
+                      score_set1_player2: null,
+                      score_set2_player1: null,
+                      score_set2_player2: null,
+                      score_set3_player1: null,
+                      score_set3_player2: null,
+                      score_set4_player1: null,
+                      score_set4_player2: null,
+                      score_set5_player1: null,
+                      score_set5_player2: null,          
+                      done: false,         
+                    },
+                    {
+                      game_id: 14,
+                      player_id1: "aleksB114",
+                      player_id2: "aleksB1",
+                      game_total_player1: null,
+                      game_total_player2: null,
+                      score_set1_player1: null,
+                      score_set1_player2: null,
+                      score_set2_player1: null,
+                      score_set2_player2: null,
+                      score_set3_player1: null,
+                      score_set3_player2: null,
+                      score_set4_player1: null,
+                      score_set4_player2: null,
+                      score_set5_player1: null,
+                      score_set5_player2: null,          
+                      done: false,         
                     },
       ]
         };
@@ -222,6 +378,7 @@ export default {
                 (error.response && error.response.data) ||
                 error.message ||
                 error.toString();
+                this.$router.push('/profile');
             }
         );
     },
@@ -252,7 +409,14 @@ export default {
           console.log("false")
           return false;
         }
-      }       
+      },
+      editScore(){
+        //console.log(this.games[index].game_id);
+        console.log("test")         
+      },
+      saveState(index){
+        this.games[index].done=true;
+      }
       
     },
 }
@@ -290,7 +454,7 @@ export default {
 }
 
 .table__round2{
-  width: 32px;  
+  width: 40px; 
   
   text-align: center;
 }
@@ -299,4 +463,8 @@ export default {
   
 }
 
+.scroll{
+  overflow-y: scroll;
+  height: 400px
+}
 </style>
