@@ -1,7 +1,6 @@
 <template>
 <nav> 
-    <v-app-bar
-        shaped
+    <v-app-bar        
         height="50px"
         app
         class="secondary"

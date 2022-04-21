@@ -170,7 +170,7 @@ export default {
                     {
                       game_id: 1,
                       player_id1: "aleksB",
-                      player_id2: "aleksB2",
+                      player_id2: "aleksB222222222222222222222222222222222222",
                       game_total_player1: null,
                       game_total_player2: null,
                       score_set1_player1: null,
@@ -188,7 +188,7 @@ export default {
                     {
                       game_id: 2,
                       player_id1: "aleksB",
-                      player_id2: "aleksB2",
+                      player_id2: "aleksB2222222222222222222222222222222222",
                       game_total_player1: 3,
                       game_total_player2: 2,
                       score_set1_player1: 2,

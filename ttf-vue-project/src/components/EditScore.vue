@@ -1,10 +1,10 @@
 <template>    
-    <v-dialog max-width="600px" v-model="show">        
+    <v-dialog max-width="500px" v-model="show">        
         <v-card>
             <v-card-title>
-                <h2>Edit form</h2>
+                <h2>Edit form</h2>                            
             </v-card-title>
-            <v-card-text>
+            <v-card-text class="mt-5">
                 <validation-observer
                     ref="observer"
                     v-slot="{ invalid }"
@@ -26,63 +26,76 @@
                           <div class="">
                             <h3>Total score</h3>
                           </div>
-                          <div class="">
-                            {{ scoreCalc.score1 }}
+                          <div class="mx-auto">
+                            {{ score1 }}
                           </div>
-                          <div class="">
-                            {{ scoreCalc.score2 }}
+                          <div class="mx-auto">
+                            {{ score2 }}
                           </div>                
                       </div>
-                      <div class="table__round_ d-flex flex-column ma-5 my-auto">
+                      <div class="table__round_ d-flex flex-column ma-5 mt-5 my-auto">
                             <h3>Score</h3>
                           <div class="table__round d-flex flex-row ma-5 my-auto">
                           <div 
                           class="table__round d-flex flex-column my-auto"
-                          v-for="index in 5"
+                          v-for="(n,index) in 5"
                           :key="index"
                           >
+                           <validation-provider
+                            v-slot="{ errors }"
+                            name="text_field"
+                            :rules="{
+                                        required: false,                                        
+                                        regex: '^[0-9]*$'
+                            }"
+                        >
                               <div class="pa-1 table__round2">
-                                <v-text-field
-                                    class="text__field"               
-                                    type="number"
-                                    name="name"                              
+                                <v-text-field                                    
+                                    name="text_field"
+                                    v-model="scoresImm.pl1[n-1]"                             
                                     outlined
-                                    dense
-                                    style = "width: 60px;"                            
+                                    dense                                    
+                                    :error-messages="errors"
+                                    style = "width: 40px;"                                    
+                                                           
                                 ></v-text-field>
                               </div>
+                           
                               <div class="pa-1 table__round2">
-                                <v-text-field
-                                    class="text__field"               
-                                    type="number"
-                                    name="player_id2s"                                
+                                <v-text-field                                    
+                                    name="text_field"
+                                    v-model="scoresImm.pl2[n-1]"                                
                                     outlined
                                     dense
-                                    style = "width: 60px;"                            
+                                    :error-messages="errors"                                    
+                                    style = "width: 40px;"
+                                                             
                                 ></v-text-field>
                               </div>
+                             </validation-provider>
                           </div>                                               
                       </div>
                       </div>
-                        </v-row>
-                        <validation-provider
+                        </v-row>                       
+
+                         <validation-provider
                             v-slot="{ errors }"
-                            name="Name"
                             rules="required"
+                            name="checkbox"
                         >
-                            <v-text-field                                
-                                label="Name" 
-                                prepend-icon="mdi-folder"                               
-                                type="text"
-                                name="username2"
-                                :error-messages="errors"
-                                required                            
-                            ></v-text-field>
-                        </validation-provider>                        
+                            <v-checkbox
+                            v-model="checkbox"
+                            :error-messages="errors"
+                            value="1"
+                            label="Option"
+                            type="checkbox"
+                            required
+                            ></v-checkbox>
+                        </validation-provider>                     
                                          
                         <v-btn type="submit" class="form-group success rounded-pill" :loading="loading" :disabled ="invalid">Login in</v-btn>                    
                         <v-btn @click="clear" class="pa-2 ma-2 success rounded-pill">Clear</v-btn>
-                        <v-btn color="primary" @click.stop="show=false">{{ gameInc.player_id2 }}</v-btn>
+                        <v-btn color="primary" @click.stop="show=false">{{ gameInc.player_id1 }}</v-btn>
                         <div class="form-group">
                         <div v-if="message" class="alert alert-danger" role="alert">{{message}}</div>
                         
@@ -95,14 +108,15 @@
 </template>
 
 <script>
-import { required, digits} from 'vee-validate/dist/rules'
+import { required, regex} from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
+//import { validate } from 'vee-validate/dist/types/rules/alpha'
 
 setInteractionMode('eager')
 
-  extend('digits', {
-    ...digits,
-    message: '{_field_} needs to be {length} digits. ({_value_})',
+  extend('regex', {
+    ...regex,
+    message: '{_field_} {_value_} does not match {regex}',
   })
 
   extend('required', {
@@ -131,13 +145,15 @@ export default {
             submitted: false,
             successful: false,
             message: '',
-            scoreId1: [],
-            scoreId2: []
+            scoresImm: {
+                pl1:[],
+                pl2:[]
+            },
+            score1: 0,
+            score2: 0,
+            checkbox: null 
         }
-    },
-    watch:{
-
-    },
+    },   
     computed: {        
         show: {
             get(){
@@ -149,17 +165,9 @@ export default {
                 this.$emit('input', value)
             }
         },
-        scoreCalc(){
-            let score1 = 0;
-            let score2 = 0;            
-            
-            
-            return {
-                score1,
-                score2
-            }
-        }
-    },
+                
+        
+    },    
     created() {
         console.log("this point:" + this.value)
        
@@ -170,11 +178,15 @@ export default {
             console.log("submit")
             this.$emit('update:gameInc', this.setData())
             this.show = false
-            console.log(this.name1_player1)
+            console.log(this.scoresImm.pl1[3])
+            console.log(this.scoresImm.pl2.length)
         },
         clear() {
                    
             this.$refs.observer.reset();
+            this.score1=0
+            this.score2=0
+            this.validateScr();
             //this.message='';
             console.log("clear")
         },
@@ -198,18 +210,58 @@ export default {
                       done: false,                               
                     };
             return data;
-        }        
-       
+        },
+        validateScr(){
+            console.log("first: " + this.scoresImm.pl1.length)
+            console.log("second: " + this.scoresImm.pl2[0])
+            if(this.scoresImm.pl1.length < 3 && this.scoresImm.pl2.length < 3){
+                console.log("lenght < 3")
+            } else {
+                for(var i = 0; i <5; i++){
+                    if(this.scoresImm.pl1[i] && this.scoresImm.pl2[i]){
+                        console.log("Good lin: " + (i+1))
+                        if((this.scoresImm.pl1[i] == 11 || this.scoresImm.pl2[i] == 11)  &&
+                         Math.abs(this.scoresImm.pl1[i]-this.scoresImm.pl2[i])> 1){
+                            console.log("11")
+                            console.log("Abs :" + Math.abs(this.scoresImm.pl1[i]-this.scoresImm.pl2[i]))
+                            if(!this.scoreCalc(this.scoresImm.pl1[i],this.scoresImm.pl2[i])) break
+                         } else if ((this.scoresImm.pl1[i] > 11 || this.scoresImm.pl2[i] > 11)  &&
+                         Math.abs(this.scoresImm.pl1[i]-this.scoresImm.pl2[i]) == 2){
+                             console.log("Ok with score: " + (i+1))
+                             if(!this.scoreCalc(this.scoresImm.pl1[i],this.scoresImm.pl2[i])) break
+                         } else {
+                             console.log("Probleme abs with line: " + (i+1))
+                             console.log("Abs :" + Math.abs(this.scoresImm.pl1[i]-this.scoresImm.pl2[i]))
+                             break
+                         }
+
+                        
+
+                    } else {
+                        console.log("Probleme with line: " + (i+1))
+                        break
+                    } 
+                
+                }  
+            }
+        },        
+        scoreCalc(v1,v2) {
+               if(Math.abs(this.score1-this.score2) < 4){                   
+                   if(v1<v2){
+                       console.log("v1 "+ v1)
+                       console.log("v2 "+ v2)
+                       this.score2++
+                   } else {
+                       console.log("v2 "+ v2)
+                       console.log("v1 "+ v1)
+                       this.score1++
+                   }
+                    return true
+               } return false
+        }      
     }
 }
 </script>
 <style scoped>
-.text__field input[type='number'] {
-    -moz-appearance:textfield;
-}
-.text__field input::-webkit-outer-spin-button,
-.text__field input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
+
 </style>
