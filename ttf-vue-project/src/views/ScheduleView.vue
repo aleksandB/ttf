@@ -1,6 +1,7 @@
 <template>
-     <v-container class="cont__main">    
 
+     <v-container class="cont__main">    
+       
       <h2 class="text-h4 success--text pl-4">
         Games:&nbsp;
         <v-fade-transition leave-absolute>
@@ -8,8 +9,7 @@
             {{ games.length }}
           </span>
         </v-fade-transition>
-      </h2>
-
+      </h2> 
       <v-divider class="mt-4"></v-divider>
 
       <v-row
@@ -104,7 +104,7 @@
                               >
                               <EditScore
                                 v-model="showScheduleForm"
-                                :gameInc.sync ="games[i]"
+                                :gameInc.sync ="games[i]"                                
                               >
                               </EditScore>
                               
@@ -159,13 +159,15 @@
 
 <script>
 import UserService from '../services/user.service';
-import EditScore from '../components/EditScore.vue'
+import EditScore from '../components/EditScore.vue';
+
+
 export default {
     components: {EditScore},
     name: 'ScheduleView',
     data() {
         return {
-            showScheduleForm: false,
+            showScheduleForm: false,            
             games: [
                     {
                       game_id: 1,
@@ -416,9 +418,9 @@ export default {
       },
       saveState(index){
         this.games[index].done=true;
-      }
+      },
       
-    },
+    }    
 }
 </script>
 <style scoped>

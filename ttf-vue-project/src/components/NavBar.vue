@@ -1,5 +1,5 @@
 <template>
-<nav> 
+<nav>
     <v-app-bar        
         height="50px"
         app
