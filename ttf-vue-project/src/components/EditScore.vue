@@ -1,5 +1,5 @@
 <template> 
-    <v-dialog max-width="500px" v-model="show">               
+    <v-dialog max-width="550px" v-model="show">               
         <v-card>
             <v-card-title>
                 <h2>Edit form</h2>                            
@@ -56,8 +56,8 @@
                                     outlined
                                     dense                                    
                                     :error-messages="errors"
-                                    style = "width: 40px;"                                    
-                                                           
+                                    style = "width: 45px;"                                    
+                                    :disabled="submitted"                      
                                 ></v-text-field>
                               </div>
                            
@@ -68,8 +68,8 @@
                                     outlined
                                     dense
                                     :error-messages="errors"                                    
-                                    style = "width: 40px;"
-                                                             
+                                    style = "width: 45px;"
+                                    :disabled="submitted"                           
                                 ></v-text-field>
                               </div>
                              </validation-provider>
@@ -85,17 +85,19 @@
                         >
                             <v-checkbox
                             v-model="checkbox"
+                            @click="validateScr"
                             :error-messages="errors"
-                            value="1"
+                            :input-value="checkbox"
                             label="Option"
                             type="checkbox"
                             required
+                            disabled
                             ></v-checkbox>
                         </validation-provider>                     
                                          
-                        <v-btn type="submit" class="form-group success rounded-pill" :loading="loading" :disabled ="invalid">Login in</v-btn>                    
-                        <v-btn @click="clear" class="pa-2 ma-2 success rounded-pill">Clear</v-btn>
-                        <v-btn color="primary" @click.stop="show=false">{{ gameInc.player_id1 }}</v-btn>
+                        <v-btn type="submit" class="form-group success rounded-pill" :loading="loading" :disabled ="invalid">Submit values</v-btn>                    
+                        <v-btn @click="validateState" class="pa-2 ma-2 success rounded-pill">Verify values</v-btn>
+                        <v-btn color="primary" @click.stop="show=false"> Close </v-btn>
                         <!--<v-btn @click="openSnackbar(msgSN)">Show snackbar</v-btn> -->
                         <div class="form-group">
                         <div v-if="message" class="alert alert-danger" role="alert">{{message}}</div>
@@ -166,14 +168,11 @@ export default {
             set(value) {
                 this.$emit('input', value)
             }
-        }      
-                
-        
+        },
+
     },    
     created() {
         console.log("this point:" + this.value)
-       
-        
     },
     methods: {
         submit(){
@@ -183,13 +182,15 @@ export default {
             console.log(this.scoresImm.pl1[3])
             console.log(this.scoresImm.pl2.length)
         },
-        clear() {
+        validateState() {
                    
             this.$refs.observer.reset();
             this.score1=0
             this.score2=0
             this.validateScr();
             //this.message='';
+            //this.checkbox = true,
+            if(this.checkbox) this.submitted = true 
             console.log("clear")
         },        
         setData() {
@@ -197,18 +198,18 @@ export default {
                       game_id: this.gameInc.game_id,
                       player_id1: this.gameInc.player_id1,
                       player_id2: this.gameInc.player_id2,
-                      game_total_player1: 3,
-                      game_total_player2: 0,
-                      score_set1_player1: 11,
-                      score_set1_player2: 1,
-                      score_set2_player1: 11,
-                      score_set2_player2: 3,
-                      score_set3_player1: 11,
-                      score_set3_player2: 3,
-                      score_set4_player1: null,
-                      score_set4_player2: null,
-                      score_set5_player1: null,
-                      score_set5_player2: null,          
+                      game_total_player1: this.score1,
+                      game_total_player2: this.score2,
+                      score_set1_player1: this.scoresImm.pl1[0],
+                      score_set1_player2: this.scoresImm.pl2[0],
+                      score_set2_player1: this.scoresImm.pl1[1],
+                      score_set2_player2: this.scoresImm.pl2[1],
+                      score_set3_player1: this.scoresImm.pl1[2],
+                      score_set3_player2: this.scoresImm.pl2[2],
+                      score_set4_player1: this.scoresImm.pl1[3],
+                      score_set4_player2: this.scoresImm.pl2[3],
+                      score_set5_player1: this.scoresImm.pl1[4],
+                      score_set5_player2: this.scoresImm.pl2[4],          
                       done: false,                               
                     };
             return data;
@@ -219,39 +220,51 @@ export default {
             if(this.scoresImm.pl1.length < 3 && this.scoresImm.pl2.length < 3){
                console.log("lenght < 3")
                this.openSnackbar("Неверно заполнены поля")
+              
             } else {
-                for(var i = 0; i <5; i++){
-                    if(this.scoresImm.pl1[i] && this.scoresImm.pl2[i]){
-                        console.log("Good lin: " + (i+1))
-                        if(this.scoresImm.pl1[i] > 11 || this.scoresImm.pl2[i] > 11){
-                            if(Math.abs(this.scoresImm.pl1[i]-this.scoresImm.pl2[i]) == 2){
-                                console.log("OK")
-                                this.scoreCalc(this.scoresImm.pl1[i],this.scoresImm.pl2[i])
-                            } else {
-                               this.openSnackbar("Разница мячей должна быть равна 2 для сета" + (i+1))
-                               break     
-                            }
-                        } else {
-                            if(this.scoresImm.pl1[i] == 11 || this.scoresImm.pl2[i] == 11){
-                                if(Math.abs(this.scoresImm.pl1[i]-this.scoresImm.pl2[i]) > 1){
-                                    console.log("OK")
+                for(var i = 0; i < this.scoresImm.pl1.length; i++){                    
+                    if(this.score1 === 3 || this.score2 === 3){
+                        this.openSnackbar("Неверный счет для сета " + (i+1))
+                        this.checkbox = false                        
+                        break;
+                    } else{
+                        if(this.scoresImm.pl1[i] && this.scoresImm.pl2[i]){
+                            console.log("Good lin: " + (i+1))
+                            if(this.scoresImm.pl1[i] > 11 || this.scoresImm.pl2[i] > 11){
+                                if(Math.abs(this.scoresImm.pl1[i]-this.scoresImm.pl2[i]) == 2){
+                                    console.log("OK1")
+                                    this.checkbox = true
                                     this.scoreCalc(this.scoresImm.pl1[i],this.scoresImm.pl2[i])
                                 } else {
-                                this.openSnackbar("Разница мячей меньше 2 для сета" + (i+1))
+                                this.openSnackbar("Разница мячей должна быть равна 2 для сета " + (i+1))
+                                this.checkbox = false  
                                 break     
                                 }
                             } else {
-                                this.openSnackbar("Неверный счет для сета " + (i+1))
-                                break
+                                if(this.scoresImm.pl1[i] == 11 || this.scoresImm.pl2[i] == 11){
+                                    if(Math.abs(this.scoresImm.pl1[i]-this.scoresImm.pl2[i]) > 1){
+                                        console.log("OK2")
+                                        this.checkbox = true
+                                        this.scoreCalc(this.scoresImm.pl1[i],this.scoresImm.pl2[i])
+                                    } else {
+                                    this.openSnackbar("Разница мячей меньше 2 для сета " + (i+1))
+                                    this.checkbox = false  
+                                    break     
+                                    }
+                                } else {
+                                    this.openSnackbar("Неверный счет для сета " + (i+1))
+                                   this.checkbox = false  
+                                    break
+                                }
                             }
-                        }
-                    }else {
-                        this.openSnackbar("Неверно заполнены поля для сета " + (i+1))
-                    }
-                }
+                        }else {
 
-            }               
-                      
+                            this.openSnackbar("Неверно заполнены поля для сета " + (i+1))
+                            this.checkbox = false  
+                        }
+                    }
+                } 
+            }         
         },        
         scoreCalc(v1,v2) {
                if(Math.abs(this.score1-this.score2) < 3){                   

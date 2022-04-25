@@ -4,6 +4,7 @@ import DashboardView from './views/DashboardView.vue'
 import ProfileView from './views/ProfileView.vue'
 import ScheduleView from './views/ScheduleView.vue'
 
+
 Vue.use(Router)
 
 export const router = new Router({
@@ -28,6 +29,11 @@ export const router = new Router({
       path: '/schedule',
       name: 'schedule',
       component: ScheduleView
+    },
+    {
+      path: '/adminpage',
+      name: 'adminpage',
+      component: () => import('./views/AdminView.vue')
     },
     {
       path: "*",
