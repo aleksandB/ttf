@@ -2,7 +2,7 @@
   <div class="table__main">
     <div class="button__main">
       <v-row class="justify-end" style="height: 80px;">            
-              <v-btn class="pa-2 ma-5">Подать заявку</v-btn> 
+              <v-btn color="info" class="pa-2 ma-5">Подать заявку</v-btn> 
           </v-row> 
      </div>
       <v-data-table
