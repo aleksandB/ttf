@@ -2,7 +2,7 @@
   <div class="table__main">
     <div class="button__main">
       <v-row class="justify-end" style="height: 80px;">            
-              <v-btn color="info" class="pa-2 ma-5">Подать заявку</v-btn> 
+              <v-btn @click="addPlayerAct()" color="info" class="pa-2 ma-5">Подать заявку</v-btn> 
           </v-row> 
      </div>
       <v-data-table
@@ -39,6 +39,7 @@
 
 <script>
 import UserService from '../services/user.service';
+import GameService from '../services/game.service';
 export default {
     name: 'DashboardView',
     data () {
@@ -150,6 +151,18 @@ export default {
         else if (places > 2) return 'orange'
         else return 'green'
       },
+        addPlayerAct(){
+          GameService.addPlayer(this.$store.state.auth.user.username).then(
+            (response) => {
+                this.content = response.data;                
+            },
+            (error) => {
+                this.content =
+                (error.response && error.response.data) ||
+                error.message || error.toString();
+            }
+        );
+        }
     }, 
     mounted() {
         UserService.getPublicContent().then(

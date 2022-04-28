@@ -13,8 +13,13 @@ import java.time.Instant;
 @Data
 public class Game {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private BigInteger id;
+    @GeneratedValue(generator = "games_seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+            name="games_seq",
+            sequenceName = "games_seq",
+            allocationSize = 50
+    )
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "season_id", referencedColumnName = "season")
@@ -22,11 +27,11 @@ public class Game {
 
     @OneToOne
     @JoinColumn(name = "player1_id", referencedColumnName = "id")
-    private User user;
+    private Player player;
 
     @OneToOne
     @JoinColumn(name = "player2_id", referencedColumnName = "id")
-    private User user2;
+    private Player player2;
 
     @Column(name="game_total_player1")
     private Integer gameTotalPlayer1;

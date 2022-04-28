@@ -1,9 +1,7 @@
 CREATE TABLE IF NOT EXISTS season_info (
-  id INT NOT NULL AUTO_INCREMENT,
+  id BIGINT NOT NULL AUTO_INCREMENT,
   season_id INT NOT NULL,
-  league_id INT NOT NULL,
-  user_id BIGINT NOT NULL,
-  team_id INT NOT NULL,
+  player_id INT NOT NULL,
   games INT,
   games_won INT,
   games_lost INT,
@@ -16,7 +14,5 @@ CREATE TABLE IF NOT EXISTS season_info (
   status ENUM('ACTUAL', 'FUTURE', 'DONE'),
   PRIMARY KEY (id),
   FOREIGN KEY(season_id) REFERENCES global_info(season),
-  FOREIGN KEY(league_id) REFERENCES leagues(id),
-  FOREIGN KEY(user_id) REFERENCES users(id),
-  FOREIGN KEY(team_id) REFERENCES teams(id)
+  FOREIGN KEY(player_id) REFERENCES players(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

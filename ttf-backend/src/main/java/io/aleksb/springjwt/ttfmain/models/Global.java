@@ -14,7 +14,7 @@ import java.time.Instant;
 @Data
 public class Global {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name="season", nullable = false, unique = true)
@@ -34,6 +34,15 @@ public class Global {
 
     @Column(name="nbr_weeks")
     private Integer nbrWeeks;
+
+    @Column(name="win_score")
+    private Integer winScore;
+
+    @Column(name="win_score3")
+    private Integer winScore3;
+
+    @Column(name="lost_score2")
+    private Integer lostScore2;
 
     @Column(name="start_date")
     private Instant startDate;

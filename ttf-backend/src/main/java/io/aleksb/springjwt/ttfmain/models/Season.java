@@ -11,24 +11,16 @@ import java.time.Instant;
 @Data
 public class Season {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private BigInteger id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "season_id", referencedColumnName = "season")
     private Global season;
 
     @OneToOne
-    @JoinColumn(name = "league_id", referencedColumnName = "id")
-    private League league;
-
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-
-    @OneToOne
-    @JoinColumn(name = "team_id", referencedColumnName = "id")
-    private Team team;
+    @JoinColumn(name = "player_id", referencedColumnName = "id")
+    private Player player;
 
     @Column(name="games")
     private Integer games;
