@@ -1,9 +1,7 @@
 package io.aleksb.springjwt.ttfmain.models;
-import io.aleksb.springjwt.auth.models.User;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.math.BigInteger;
 import java.time.Instant;
 
 @Entity

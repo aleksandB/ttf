@@ -2,14 +2,15 @@ package io.aleksb.springjwt.ttfmain.services;
 
 import io.aleksb.springjwt.auth.repository.UserRepository;
 import io.aleksb.springjwt.ttfmain.exceptions.ResourceNotFoundException;
+import io.aleksb.springjwt.ttfmain.models.EStatus;
 import io.aleksb.springjwt.ttfmain.models.Player;
-import io.aleksb.springjwt.ttfmain.repository.GlobalRepository;
-import io.aleksb.springjwt.ttfmain.repository.LeagueRepository;
-import io.aleksb.springjwt.ttfmain.repository.PlayerRepository;
-import io.aleksb.springjwt.ttfmain.repository.TeamRepository;
+import io.aleksb.springjwt.ttfmain.models.Season;
+import io.aleksb.springjwt.ttfmain.payload.response.NewMemberResponse;
+import io.aleksb.springjwt.ttfmain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,7 +20,7 @@ public class AddNewMemberService {
     private PlayerRepository playerRepository;
 
     @Autowired
-    private GlobalRepository global;
+    private GlobalRepository globalRepository;
 
     @Autowired
     private TeamRepository teamRepository;
@@ -30,27 +31,41 @@ public class AddNewMemberService {
     @Autowired
     private LeagueRepository leagueRepository;
 
-    public int getPlayerId(Long userId){
-        Optional<Player> playersData = Optional.ofNullable(playerRepository.findByUserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found Tutorial with id = " + userId)));
-        if(playersData.isPresent()){
-            return playersData.get().getId();
-        } else {
-            return createPlayer(userId).getId();
+    @Autowired
+    private SeasonRepository seasonRepository;
+
+    //Verify and create new player
+    public NewMemberResponse getPlayerId(Long userId) {
+        try {
+            Optional<Player> playersData = playerRepository.findByUserId(userId);
+            if (playersData.isPresent()) {
+                return new NewMemberResponse(playersData.get().getId(), "Player already registred to the next competition");
+            } else {
+                return new NewMemberResponse(createPlayer(userId).getId(), "Player has been registred successfully");
+            }
+        } catch (Exception e) {
+            return new NewMemberResponse(0, "UserId not exists in DB" + e.getStackTrace().toString());
         }
     }
-
     public Player createPlayer(Long userId){
 
         Player player = new Player(null,
                                 userRepository.findById(userId).get(),
-                                teamRepository.findById(1).get(),
-                                leagueRepository.findById(1).get());
+                                teamRepository.findById(1).get(),  // New player with temaId=1
+                                leagueRepository.findById(1).get());  // New player with leageId=1
         playerRepository.save(player);
         return player;
 
     }
 
-
+    public boolean verifySeasonInfo(){
+        //int actualSeasonNumber = globalRepository.findById(globalRepository.findAll().size()).get().getSeason();
+        List<Season> futureSeasons = seasonRepository.findByStatus(EStatus.FUTURE);
+        if(futureSeasons.size() > 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

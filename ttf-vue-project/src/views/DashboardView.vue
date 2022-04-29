@@ -40,6 +40,7 @@
 <script>
 import UserService from '../services/user.service';
 import GameService from '../services/game.service';
+import { showSnackbar } from "../globalActions";
 export default {
     name: 'DashboardView',
     data () {
@@ -151,10 +152,12 @@ export default {
         else if (places > 2) return 'orange'
         else return 'green'
       },
-        addPlayerAct(){
-          GameService.addPlayer(this.$store.state.auth.user.username).then(
+        addPlayerAct(){          
+          console.log(this.$store.state.auth.user.id)
+          GameService.addPlayer(this.$store.state.auth.user.id).then(
             (response) => {
                 this.content = response.data;                
+                showSnackbar(response.data.message)  
             },
             (error) => {
                 this.content =
@@ -162,10 +165,10 @@ export default {
                 error.message || error.toString();
             }
         );
-        }
+        },
     }, 
     mounted() {
-        UserService.getPublicContent().then(
+      UserService.getPublicContent().then(
             (response) => {
                 this.content = response.data;                
             },

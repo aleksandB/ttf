@@ -4,7 +4,6 @@ import DashboardView from './views/DashboardView.vue'
 import ProfileView from './views/ProfileView.vue'
 import ScheduleView from './views/ScheduleView.vue'
 
-
 Vue.use(Router)
 
 export const router = new Router({

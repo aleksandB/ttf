@@ -1,13 +1,9 @@
 import api from './api';
 class GameService {
-    addPlayer({userId}) {
+    addPlayer(userId) {
         return api.post('/game/addnewmember',{
             userId
-        })
-        .then((response) => {
-            console.log('Player Created')
-            console.log(response.data.playerId)            
-        });
+        })        
     }
     
 }

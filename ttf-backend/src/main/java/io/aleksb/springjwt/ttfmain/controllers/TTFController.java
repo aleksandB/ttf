@@ -2,6 +2,7 @@ package io.aleksb.springjwt.ttfmain.controllers;
 
 import io.aleksb.springjwt.auth.repository.UserRepository;
 import io.aleksb.springjwt.ttfmain.payload.request.AddNewMemberRequest;
+import io.aleksb.springjwt.ttfmain.payload.response.NewMemberResponse;
 import io.aleksb.springjwt.ttfmain.repository.SeasonRepository;
 import io.aleksb.springjwt.ttfmain.services.AddNewMemberService;
 import org.slf4j.Logger;
@@ -30,15 +31,17 @@ public class TTFController {
     AddNewMemberService addNewMemberService;
 
   @PostMapping("/addnewmember")
-  //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+  @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
   public ResponseEntity<?> addNewMember(@RequestBody AddNewMemberRequest addNewMemberRequest){
         logger.info("User id is : " + addNewMemberRequest.getUserId());
-        int playerId = addNewMemberService.getPlayerId(addNewMemberRequest.getUserId());
-        logger.info("Player id is : " + playerId);
-        if(playerId > 0){
-            return new ResponseEntity<>(playerId, HttpStatus.OK);
+        NewMemberResponse newMemberResponse = addNewMemberService.getPlayerId(addNewMemberRequest.getUserId());
+        logger.info("Player id is : " + newMemberResponse.getPlayerId());
+        logger.info("status : " + addNewMemberService.verifySeasonInfo());
+        logger.info(newMemberResponse.getMessage());
+        if(newMemberResponse.getPlayerId() > 0){
+            return new ResponseEntity<>(newMemberResponse, HttpStatus.OK);
         } else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(newMemberResponse,HttpStatus.NOT_FOUND);
         }
 
 

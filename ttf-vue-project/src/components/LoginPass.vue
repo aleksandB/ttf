@@ -134,6 +134,7 @@
                         </validation-provider>                      
                         <v-btn type="submit" class="success rounded-pill" :loading="loading" :disabled="invalid">Sign up</v-btn>
                         <v-btn @click="clearReg" class="pa-2 ma-2 success rounded-pill">Clear</v-btn>
+                        <v-btn color="primary" @click.stop="dialog2=false" class="pa-2 ma-2 success rounded-pill"> Close </v-btn>
                         <div
                         v-if="message"
                         class="alert"
@@ -222,7 +223,15 @@ export default {
     computed: {
         loggedIn() {
             return this.$store.state.auth.status.loggedIn;
-        }
+        },
+        show: {
+            get(){                               
+                return this.value
+            },
+            set(value) {
+                this.$emit('input', value)
+            }
+        },
     },
     created() {
         if (this.loggedIn) {
@@ -264,8 +273,7 @@ export default {
                     this.$store.dispatch('auth/register',this.userReg).then (
                         data => {
                             this.message = data.message;
-                            this.successful = true;
-                            this.clearReg();
+                            this.successful = true;                            
                         },
                         error => {
                             this.message = 

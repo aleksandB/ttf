@@ -1,5 +1,5 @@
 <template>
-    <div class="profile mx-5">Dashboard
+    <div v-if="currentUser" class="profile mx-5">Dashboard
         <div class="container">
         <header class="jumbotron">
         <h3>
@@ -24,6 +24,8 @@
         </ul>
         </div>
     </div>
+    <div v-else>"Auth required"</div>
+
 </template>
 
 <script>

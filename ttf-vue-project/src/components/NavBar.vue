@@ -50,15 +50,13 @@ export default {
         return this.$store.state.auth.user;
         },
         showBoards() {
-        if (this.currentUser.roles.includes('ROLE_ADMIN')) {
+        if (this.currentUser?.roles.includes('ROLE_ADMIN')) {
             return this.links;
         } else {
-            return this.links.filter(link => {
-                return link.text !== "Admin Page"
-            })
+            return this.links.slice(0,3)
         }
          }   
-      
+    
     },
 }
 </script>

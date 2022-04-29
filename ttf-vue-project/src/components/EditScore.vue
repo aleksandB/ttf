@@ -114,7 +114,6 @@
 import { required, regex} from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
 import { showSnackbar } from "../globalActions";
-//import { validate } from 'vee-validate/dist/types/rules/alpha'
 
 setInteractionMode('eager')
 
@@ -160,9 +159,7 @@ export default {
     },   
     computed: {        
         show: {
-            get(){
-                //console.log("this point:"+ this.value)
-                
+            get(){                               
                 return this.value
             },
             set(value) {
