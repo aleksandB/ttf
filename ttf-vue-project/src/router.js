@@ -30,6 +30,11 @@ export const router = new Router({
       component: ScheduleView
     },
     {
+      path: '/adminpage',
+      name: 'adminpage',
+      component: () => import('./views/AdminView.vue')
+    },
+    {
       path: "*",
       redirect: "/"
     }

@@ -1,7 +1,6 @@
 <template>
-<nav> 
-    <v-app-bar
-        shaped
+<nav>
+    <v-app-bar        
         height="50px"
         app
         class="secondary"
@@ -15,7 +14,7 @@
     <v-navigation-drawer app v-model="drawer" class="primary">
         <v-layout>
            <v-list>
-              <v-list-item v-for="link in links" :key="link.text" router :to="link.route">
+              <v-list-item v-for="link in showBoards" :key="link.text" router :to="link.route">
                 <v-list-item-action>
                  <v-icon color="secondary">{{ link.icon }}</v-icon>
                 </v-list-item-action>
@@ -42,8 +41,22 @@ export default {
             { icon: 'mdi-account', text: 'ProfileView', route: '/profile' },        
             { icon: 'mdi-view-dashboard', text: 'DashboardView', route: '/dashboard' },        
             { icon: 'mdi-puzzle', text: 'ScheduleView', route: '/schedule' },
+            { icon: 'mdi-airplane', text: 'Admin Page' , route: '/adminpage'}
         ],
         }
-    }
+    },
+    computed:{
+        currentUser() {
+        return this.$store.state.auth.user;
+        },
+        showBoards() {
+        if (this.currentUser?.roles.includes('ROLE_ADMIN')) {
+            return this.links;
+        } else {
+            return this.links.slice(0,3)
+        }
+         }   
+    
+    },
 }
 </script>

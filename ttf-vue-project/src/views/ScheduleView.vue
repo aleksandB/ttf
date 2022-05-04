@@ -1,6 +1,7 @@
 <template>
-     <v-container class="cont__main">    
 
+     <v-container class="cont__main">    
+       
       <h2 class="text-h4 success--text pl-4">
         Games:&nbsp;
         <v-fade-transition leave-absolute>
@@ -8,8 +9,7 @@
             {{ games.length }}
           </span>
         </v-fade-transition>
-      </h2>
-
+      </h2> 
       <v-divider class="mt-4"></v-divider>
 
       <v-row
@@ -35,10 +35,21 @@
       </v-row>
 
       <v-divider class="mb-4"></v-divider>
+      <v-row
+        class="my-1"
+        align="center"
+      >
+      <v-btn-toggle background-color="success" color="deep-purple accent-3" multiple>          
+          <v-btn class="ma-2" @click="changeButtonStateActive">Open games</v-btn>
+          <v-btn class="ma-2" @click="changeButtonStateMyAll">All my games</v-btn>
+      </v-btn-toggle>
+      
+      </v-row>
+      <v-divider class="mb-4"></v-divider>
 
       <v-card v-if="games.length > 0" class="scroll">
         
-          <template v-for="(game, i) in games">         
+          <template v-for="(game, i) in getGames">         
             <v-divider
               v-if="i !== 0"
               :key="`${i}-divider`"
@@ -91,7 +102,7 @@
                       </div>                      
                       
                       <v-spacer/>
-                      <div v-if="!game.done && getCurrentUser(i)" class="table__btn d-flex flex-row justify-content-end ma-5 my-auto">  
+                      <div v-if="!game.done && getCurrentUser(game)" class="table__btn d-flex flex-row justify-content-end ma-5 my-auto">  
                             <v-tooltip top>
                               <template v-slot:activator="{ on, attrs } ">
                               <v-btn
@@ -104,7 +115,7 @@
                               >
                               <EditScore
                                 v-model="showScheduleForm"
-                                :gameInc.sync ="games[i]"
+                                :gameInc.sync ="games[i]"                                
                               >
                               </EditScore>
                               
@@ -122,7 +133,7 @@
                               color="info"
                               v-bind="attrs"
                               v-on="on"
-                              @click="saveState(i)"
+                              @click="saveState(game)"
                               >
                                 <v-icon fab centered>mdi-package-down</v-icon>
                                 <span class="caption text-lowercase"></span>
@@ -159,18 +170,22 @@
 
 <script>
 import UserService from '../services/user.service';
-import EditScore from '../components/EditScore.vue'
+import EditScore from '../components/EditScore.vue';
+
+
 export default {
     components: {EditScore},
     name: 'ScheduleView',
     data() {
         return {
             showScheduleForm: false,
+            pressedActive: false,
+            pressedMyAll: false,            
             games: [
                     {
                       game_id: 1,
                       player_id1: "aleksB",
-                      player_id2: "aleksB2",
+                      player_id2: "aleksB22222",
                       game_total_player1: null,
                       game_total_player2: null,
                       score_set1_player1: null,
@@ -188,7 +203,7 @@ export default {
                     {
                       game_id: 2,
                       player_id1: "aleksB",
-                      player_id2: "aleksB2",
+                      player_id2: "aleksB2222222222222222222222222222222222",
                       game_total_player1: 3,
                       game_total_player2: 2,
                       score_set1_player1: 2,
@@ -369,7 +384,7 @@ export default {
         };
     },
     mounted() {
-        UserService.getAdminBoard().then(
+        UserService.getUserBoard().then(
             response => {
                 this.content = response.data;
             },
@@ -393,16 +408,45 @@ export default {
       remainingTasks () {        
         return this.games.length - this.completedTasks
       },
-        
-     
+      getGames() {
+        if(!this.pressedActive && !this.pressedMyAll){
+          return this.games      
+        }else if (this.pressedActive && !this.pressedMyAll){
+          return this.games.filter(game => {
+              return game.done === false 
+           })
+        }else if(!this.pressedActive && this.pressedMyAll){          
+          return this.games.filter(game => {
+              return this.getCurrentUserGame(game)
+           })           
+      }else {         
+          return this.games.filter(game => {
+              return this.getCurrentUserGame(game) && game.done === false
+           }) 
+      }
+      }
+      
     },
 
-    methods: {
-      getCurrentUser(index){
-        console.log(index)
-        console.log(this.games[index].player_id1)
-        if(this.games[index].player_id1 == this.$store.state.auth.user.username
-        || this.games[index].player_id2 == this.$store.state.auth.user.username) {
+    methods: {      
+      changeButtonStateActive(){
+          if(this.pressedActive === false){
+            this.pressedActive = true
+          } else {
+            this.pressedActive = false
+          }
+      },
+      changeButtonStateMyAll(){
+          if(this.pressedMyAll === false){
+            this.pressedMyAll = true
+          } else {
+            this.pressedMyAll = false
+          }
+      },
+      getCurrentUser(game){        
+        console.log(game.player_id1)
+        if(game.player_id1 == this.$store.state.auth.user.username
+        || game.player_id2 == this.$store.state.auth.user.username) {
           console.log("true")
           return true;
         } else {
@@ -410,15 +454,26 @@ export default {
           return false;
         }
       },
+      getCurrentUserGame(game){        
+        console.log(game.player_id1)
+        if(game.player_id1 == this.$store.state.auth.user.username
+        || game.player_id2 == this.$store.state.auth.user.username) {
+          console.log("true")
+          return game;
+        } else {
+          console.log("false")
+          return null;
+        }
+      },
       editScore(){
         //console.log(this.games[index].game_id);
         console.log("test")         
       },
-      saveState(index){
-        this.games[index].done=true;
-      }
+      saveState(game){
+        game.done=true;
+      },
       
-    },
+    }    
 }
 </script>
 <style scoped>
@@ -467,4 +522,5 @@ export default {
   overflow-y: scroll;
   height: 400px
 }
+
 </style>

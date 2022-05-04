@@ -1,5 +1,7 @@
 package io.aleksb.springjwt.auth.controllers;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +23,6 @@ import io.aleksb.springjwt.auth.payload.response.MessageResponse;
 import io.aleksb.springjwt.auth.payload.response.TokenRefreshResponse;
 import io.aleksb.springjwt.auth.repository.RoleRepository;
 import io.aleksb.springjwt.auth.repository.UserRepository;
-import io.aleksb.springjwt.auth.security.jwt.AuthEntryPointJwt;
 import io.aleksb.springjwt.auth.security.jwt.JwtUtils;
 import io.aleksb.springjwt.auth.security.services.RefreshTokenService;
 import io.aleksb.springjwt.auth.security.services.UserDetailsImpl;
