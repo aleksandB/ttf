@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS games (
   date_edit DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
   user_id_edit BIGINT NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY(season_id) REFERENCES global_info(season),
+  FOREIGN KEY(season_id) REFERENCES seasons(id),
   FOREIGN KEY(player1_id) REFERENCES players(id),
   FOREIGN KEY(player2_id) REFERENCES players(id),
   FOREIGN KEY(user_id_edit) REFERENCES users(id)

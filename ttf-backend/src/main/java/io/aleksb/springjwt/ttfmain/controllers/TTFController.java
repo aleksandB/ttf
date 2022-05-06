@@ -36,7 +36,7 @@ public class TTFController {
         logger.info("User id is : " + addNewMemberRequest.getUserId());
         NewMemberResponse newMemberResponse = addNewMemberService.getPlayerId(addNewMemberRequest.getUserId());
         logger.info("Player id is : " + newMemberResponse.getPlayerId());
-        logger.info("status : " + addNewMemberService.verifySeasonInfo());
+        logger.info("Player id is : " + newMemberResponse.isStatusCh());
         logger.info(newMemberResponse.getMessage());
         if(newMemberResponse.getPlayerId() > 0){
             return new ResponseEntity<>(newMemberResponse, HttpStatus.OK);

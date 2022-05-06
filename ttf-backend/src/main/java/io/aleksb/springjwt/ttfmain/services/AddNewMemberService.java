@@ -10,6 +10,8 @@ import io.aleksb.springjwt.ttfmain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,9 +20,6 @@ public class AddNewMemberService {
 
     @Autowired
     private PlayerRepository playerRepository;
-
-    @Autowired
-    private GlobalRepository globalRepository;
 
     @Autowired
     private TeamRepository teamRepository;
@@ -38,13 +37,18 @@ public class AddNewMemberService {
     public NewMemberResponse getPlayerId(Long userId) {
         try {
             Optional<Player> playersData = playerRepository.findByUserId(userId);
+
+
             if (playersData.isPresent()) {
-                return new NewMemberResponse(playersData.get().getId(), "Player already registred to the next competition");
+                return new NewMemberResponse(playersData.get().getId(), verifySeasonInfo(),"Player already registred to the next competition");
             } else {
-                return new NewMemberResponse(createPlayer(userId).getId(), "Player has been registred successfully");
+                return new NewMemberResponse(createPlayer(userId).getId(), verifySeasonInfo(), "Player has been registred successfully");
             }
         } catch (Exception e) {
-            return new NewMemberResponse(0, "UserId not exists in DB" + e.getStackTrace().toString());
+            StringWriter stringWriter= new StringWriter();
+            PrintWriter printWriter= new PrintWriter(stringWriter);
+            e.printStackTrace(printWriter);
+            return new NewMemberResponse(0,verifySeasonInfo(), "UserId not exists in DB" + stringWriter.toString());
         }
     }
     public Player createPlayer(Long userId){
@@ -52,7 +56,9 @@ public class AddNewMemberService {
         Player player = new Player(null,
                                 userRepository.findById(userId).get(),
                                 teamRepository.findById(1).get(),  // New player with temaId=1
-                                leagueRepository.findById(1).get());  // New player with leageId=1
+                                leagueRepository.findById(1).get(),
+                                seasonRepository.findById(1).get(),
+                                EStatus.FUTURE);  // New player with leageId=1
         playerRepository.save(player);
         return player;
 
@@ -60,12 +66,15 @@ public class AddNewMemberService {
 
     public boolean verifySeasonInfo(){
         //int actualSeasonNumber = globalRepository.findById(globalRepository.findAll().size()).get().getSeason();
-        List<Season> futureSeasons = seasonRepository.findByStatus(EStatus.FUTURE);
-        if(futureSeasons.size() > 0){
+        //List<Season> futureSeasons = seasonRepository.findByStatus(EStatus.FUTURE);
+        //List<Season> seasonT = seasonRepository.findAll();
+        //return seasonT.size();
+       /* if(futureSeasons.size() > 0){
             return true;
         } else {
             return false;
-        }
+        }*/
+        return true;
     }
 
 }

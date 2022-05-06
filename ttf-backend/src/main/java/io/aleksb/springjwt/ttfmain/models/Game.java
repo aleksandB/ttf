@@ -22,8 +22,8 @@ public class Game {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "season_id", referencedColumnName = "season")
-    private Global season;
+    @JoinColumn(name = "season_id", referencedColumnName = "id")
+    private Season season;
 
     @OneToOne
     @JoinColumn(name = "player1_id", referencedColumnName = "id")
