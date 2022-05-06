@@ -5,50 +5,47 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "season_info")
+@Table(name = "seasons")
 @Data
 public class Season {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @OneToOne
-    @JoinColumn(name = "season_id", referencedColumnName = "season")
-    private Global season;
+    @Column(name="nbr_players")
+    private Integer nbrPlayers;
 
-    @OneToOne
-    @JoinColumn(name = "player_id", referencedColumnName = "id")
-    private Player player;
+    @Column(name="nbr_leagues")
+    private Integer nbrLeagues;
 
-    @Column(name="games")
-    private Integer games;
+    @Column(name="nbr_teams")
+    private Integer nbrTeams;
 
-    @Column(name="games_won")
-    private Integer gamesWon;
+    @Column(name="nbr_games")
+    private Integer nbrGames;
 
-    @Column(name="games_lost")
-    private Integer gamesLost;
+    @Column(name="nbr_weeks")
+    private Integer nbrWeeks;
 
-    @Column(name="set_won")
-    private Integer setWon;
+    @Column(name="win_score")
+    private Integer winScore;
 
-    @Column(name="set_lost")
-    private Integer setLost;
+    @Column(name="win_score3")
+    private Integer winScore3;
 
-    @Column(name="score_won")
-    private Instant scoreWon;
+    @Column(name="lost_score2")
+    private Integer lostScore2;
 
-    @Column(name="score_lost")
-    private Instant scoreLost;
+    @Column(name="start_date")
+    private Instant startDate;
 
-    @Column(name="score_season")
-    private Instant scoreSeason;
+    @Column(name="end_date")
+    private Instant endDate;
 
-    @Column(name="place")
-    private Instant place;
+    @Column(name="start_status",nullable = false)
+    private Boolean startStatus;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="status",length = 20)
-    private EStatus status;
+    @Column(name="end_status",nullable = false)
+    private Boolean endStatus;
 
 }
