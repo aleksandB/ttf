@@ -36,45 +36,33 @@ public class AddNewMemberService {
     //Verify and create new player
     public NewMemberResponse getPlayerId(Long userId) {
         try {
-            Optional<Player> playersData = playerRepository.findByUserId(userId);
-
+            Optional<Player> playersData = playerRepository.findByUserIdAndStatus(userId,EStatus.FUTURE);
 
             if (playersData.isPresent()) {
-                return new NewMemberResponse(playersData.get().getId(), verifySeasonInfo(),"Player already registred to the next competition");
+                return new NewMemberResponse(playersData.get().getId(), "Player already registred to the next competition");
             } else {
-                return new NewMemberResponse(createPlayer(userId).getId(), verifySeasonInfo(), "Player has been registred successfully");
+                return new NewMemberResponse(createPlayer(userId).getId(), "Player has been registred successfully");
             }
         } catch (Exception e) {
             StringWriter stringWriter= new StringWriter();
             PrintWriter printWriter= new PrintWriter(stringWriter);
             e.printStackTrace(printWriter);
-            return new NewMemberResponse(0,verifySeasonInfo(), "UserId not exists in DB" + stringWriter.toString());
+            return new NewMemberResponse(0, "UserId not exists in DB" + stringWriter.toString());
         }
     }
-    public Player createPlayer(Long userId){
 
+    //Create new player
+    public Player createPlayer(Long userId){
         Player player = new Player(null,
                                 userRepository.findById(userId).get(),
                                 teamRepository.findById(1).get(),  // New player with temaId=1
-                                leagueRepository.findById(1).get(),
-                                seasonRepository.findById(1).get(),
-                                EStatus.FUTURE);  // New player with leageId=1
+                                leagueRepository.findById(1).get(),// New player with leageId=1
+                                seasonRepository.findByStartStatus(false),
+                                EStatus.FUTURE);
         playerRepository.save(player);
         return player;
 
     }
 
-    public boolean verifySeasonInfo(){
-        //int actualSeasonNumber = globalRepository.findById(globalRepository.findAll().size()).get().getSeason();
-        //List<Season> futureSeasons = seasonRepository.findByStatus(EStatus.FUTURE);
-        //List<Season> seasonT = seasonRepository.findAll();
-        //return seasonT.size();
-       /* if(futureSeasons.size() > 0){
-            return true;
-        } else {
-            return false;
-        }*/
-        return true;
-    }
 
 }
