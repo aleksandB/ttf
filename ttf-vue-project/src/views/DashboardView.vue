@@ -2,7 +2,7 @@
   <div class="table__main">
     <div class="button__main">
       <v-row class="justify-end" style="height: 80px;">            
-              <v-btn @click="addPlayerAct()" color="info" class="pa-2 ma-5">Подать заявку</v-btn> 
+              <v-btn @click="addPlayerAct()" color="info" class="pa-2 ma-5">Create a new request</v-btn> 
           </v-row> 
      </div>
       <v-data-table

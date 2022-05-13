@@ -5,6 +5,9 @@ class GameService {
             userId
         })        
     }
+    getInfoPlayers(){
+        return api.get('/game/getplayers')
+    }
     
 }
 export default new GameService();
